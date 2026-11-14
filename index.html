@@ -3187,8 +3187,24 @@
           state.mode === "lock" ? "#8a631d" : "var(--gold)";
 
         if (state.mode === "lock") {
-          inspectorBody.innerHTML =
-            '<div class="workspace-card"><h3>Workspace terkunci</h3><p>Mode Lock aktif. Seluruh elemen dapat dilihat, tetapi tidak dapat dipindahkan atau diedit. Aktifkan kembali mode Editable dari dock di kiri bawah.</p></div>';
+          if (node) {
+            inspectorBody.innerHTML = `
+      <div class="photo-preview${node.photoShape === "square" ? " square" : ""}" id="photoPreview">${node.photoName ? `<img src="${esc(photoURL(node.photoName))}" alt="Foto ${esc(node.picName || node.position || "penanggung jawab")}" onerror="this.remove();this.parentElement.innerHTML='${userSVG().replace(/'/g, "&#39;")}'">` : userSVG()}</div>
+      <p class="side-section-title">Informasi Kartu</p>
+      <div class="field"><label>Jabatan / Posisi</label><div class="workspace-card"><strong>${esc(node.position || "Belum diisi")}</strong></div></div>
+      <div class="field"><label>Nama</label><div class="workspace-card"><strong>${esc(node.picName || "Belum diisi")}</strong></div></div>`;
+          } else if (o && o.type === "floating") {
+            inspectorBody.innerHTML = `
+      <div class="photo-preview${o.photoShape === "square" ? " square" : ""}" id="photoPreview">${o.photoName ? `<img src="${esc(photoURL(o.photoName))}" alt="Foto ${esc(o.picName || o.position || "penanggung jawab")}" onerror="this.remove();this.parentElement.innerHTML='${userSVG().replace(/'/g, "&#39;")}'">` : userSVG()}</div>
+      <p class="side-section-title">Informasi Kartu Independen</p>
+      <div class="field"><label>Jabatan / Posisi</label><div class="workspace-card"><strong>${esc(o.position || "Belum diisi")}</strong></div></div>
+      <div class="field"><label>Nama</label><div class="workspace-card"><strong>${esc(o.picName || "Belum diisi")}</strong></div></div>`;
+          } else if (o) {
+            inspectorBody.innerHTML = `<div class="workspace-card"><h3>${esc(o.type || "Objek")}</h3><p>Objek terpilih. Mode View Only aktif sehingga properti tidak dapat diubah.</p></div>`;
+          } else {
+            inspectorBody.innerHTML =
+              '<div class="workspace-card"><h3>Properties</h3><p>Pilih kartu pada kanvas untuk melihat foto, jabatan, dan nama penanggung jawab. Mode View Only tidak mengizinkan perubahan.</p></div>';
+          }
           return;
         }
         if (node) {
